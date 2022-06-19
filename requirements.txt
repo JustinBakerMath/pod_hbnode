@@ -1,0 +1,10 @@
+argparse
+ipywidgets
+numpy
+matplotlib
+pandas
+pickle
+scipy
+torch
+torchdiffeq
+tqdm

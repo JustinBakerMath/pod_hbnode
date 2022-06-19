@@ -1,0 +1,19 @@
+#Removed Due to File Size(s)
+**/__pycache__/*
+**/.ipynb_checkpoints/*
+**/pod_hbnode.egg-info/*
+**/fiber/*
+#Raw Output
+out/*
+#Base Data Files (Generators Still Included)
+**/*.dat
+**/*.pkl
+**/*.npz 
+#References and Text Documents
+ref/*
+ref/tex/*
+#Swap Files
+**/*.swp
+**/*.un~
+**/*.py~
+**/*.sh~

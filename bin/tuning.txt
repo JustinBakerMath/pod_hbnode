@@ -1,0 +1,296 @@
+## Tuning Parameters from old `./bin/`
+
+**VKS Equations**
+
+ echo "USING PYTHON EXECUTABLE $1"
+ echo "GENERATING VKS TRANSIENT WITH POD"
+ $1 src/run_pod.py \
+     --dataset VKS \
+     --data_dir ./data/VKS.pkl \
+     --out_dir ./out/full/ \
+     --modes 8 \
+     --tstart 0 \
+     --tstop 400 \
+     --tpred 200
+ echo "PREDICTING VKS TRANSIENT WITH DMD"
+ $1 src/run_dmd.py \
+     --dataset VKS \
+     --data_dir ./data/VKS.pkl \
+     --out_dir ./out/full/ \
+ 	--lifts sin cos quad cube \
+     --modes 24 \
+     --tstart 0 \
+     --tstop 200 \
+     --tpred 200
+ echo "PREDICTING TRANSIENT VSK WITH SEQ NODE"
+ $1 src/run_seq.py \
+     --dataset VKS \
+     --data_dir ./data/VKS.pkl \
+     --load_file ./out/full/pth/vks_0_400_pod_8.npz \
+     --out_dir ./out/full/ \
+     --tr_ind 80 \
+     --val_ind 120 \
+     --eval_ind 200 \
+     --batch_size 100 \
+     --model NODE
+ echo "PREDICTING TRANSIENT VSK WITH SEQ HBNODE"
+ $1 src/run_seq.py \
+     --dataset VKS \
+     --data_dir ./data/VKS.pkl \
+     --load_file ./out/full/pth/vks_0_400_pod_8.npz \
+     --out_dir ./out/full/ \
+     --tr_ind 80 \
+     --val_ind 120 \
+     --eval_ind 200 \
+     --batch_size 100 \
+     --model HBNODE 
+echo "COMPARISON PLOTS"
+$1 src/compare.py \
+   --out_dir ./out/full/ \
+   --file_list ./out/full/pth/HBNODE.csv ./out/full/pth/NODE.csv \
+   --model_list HBNODE NODE \
+   --comparisons forward_nfe backward_nfe tr_loss val_loss forward_stiff backward_stiff \
+   --epoch_freq 5
+echo "BASH TASK(S) COMPLETED."
+read -p "$*"
+ echo "USING PYTHON EXECUTABLE $1"
+ echo "GENERATING VKS NON-TRANSIENT MODES"
+ $1 src/run_pod.py \
+     --dataset VKS \
+     --data_dir ./data/VKS.pkl \
+     --out_dir ./out/nonT_pred/ \
+     --modes 8 \
+     --tstart 100 \
+     --tstop 400 \
+     --tpred 100
+ echo "PREDICTING VKS NON-TRANSIENT WITH DMD"
+ $1 src/run_dmd.py \
+     --dataset VKS \
+     --data_dir ./data/VKS.pkl \
+     --out_dir ./out/nonT_pred/ \
+     --lifts sin cos quad cube \
+     --modes 24 \
+     --tstart 100 \
+     --tstop 400 \
+     --tpred 399
+ echo "PREDICTING VKS NON-TRANSIENT WITH VAE NODE"
+ $1 src/run_vae.py \
+     --dataset VKS \
+     --data_dir ./data/VKS.pkl \
+     --load_file ./out/nonT_pred/pth/vks_100_400_pod_8.npz \
+     --out_dir ./out/nonT_pred/ \
+     --tr_ind 75 \
+     --val_ind 100 \
+     --eval_ind 200 \
+     --model NODE
+ echo "PREDICTING VKS NON-TRANSIENT WITH VAE HBNODE"
+ $1 src/run_vae.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --load_file ./out/nonT_pred/pth/vks_100_400_pod_8.npz \
+    --out_dir ./out/nonT_pred/ \
+    --tr_ind 75 \
+    --val_ind 100 \
+    --eval_ind 200 \
+    --mdel HBNODE \
+    --seed 0
+echo "COMPARISON PLOTS"
+$1 src/compare.py \
+   --out_dir ./out/nonT_pred/ \
+   --file_list ./out/nonT_pred/pth/HBNODE.csv ./out/nonT_pred/pth/NODE.csv \
+   --model_list HBNODE NODE \
+   --comparisons forward_nfe backward_nfe tr_loss val_loss \
+   --epoch_freq 100
+echo "BASH TASK(S) COMPLETED."
+read -p "$*"
+
+**KPP Equations**
+
+ echo "USING PYTHON EXECUTABLE $1"
+ echo "GENERATING KPP WITH POD"
+ $1 src/run_pod.py \
+     --dataset KPP \
+     --data_dir ./data/KPP.npz \
+     --out_dir ./out/kpp/ \
+     --modes 8 \
+     --tstart 0 \
+     --tstop 1000 \
+     --tpred 999 \
+     --verbose
+ echo "PREDICTING KPP WITH DMD"
+ $1 src/run_dmd.py \
+     --dataset KPP \
+     --data_dir ./data/KPP.npz \
+     --out_dir ./out/kpp/ \
+     --modes 24 \
+     --tstart 0 \
+     --tstop 1000 \
+     --tpred 999 \
+     --lifts sin cos quad cube \
+     --verbose
+ echo "GENERATING KPP PREDICTIONS"
+ $1 src/run_seq.py \
+     --dataset KPP \
+     --data_dir ./data/KPP.npz \
+     --load_file ./out/kpp/pth/kpp_0_1251_pod_8.npz \
+     --out_dir ./out/kpp/ \
+     --tr_ind 800 \
+  	--seq_ind 4 \
+     --val_ind 1000 \
+     --eval_ind 1251 \
+     --batch_size 1000 \
+ 	--layers 2 \
+ 	--lr .01 \
+     --model NODE
+ $1 src/run_seq.py \
+     --dataset KPP \
+     --data_dir ./data/KPP.npz \
+     --load_file ./out/kpp/pth/kpp_0_1251_pod_8.npz \
+     --out_dir ./out/kpp/ \
+     --tr_ind 800 \
+ 	--seq_ind 4 \
+     --val_ind 1000 \
+     --eval_ind 1251 \
+     --batch_size 1000 \
+ 	--layers 2 \
+ 	--lr .01 \
+     --model HBNODE 
+echo "COMPARISON PLOTS"
+$1 src/compare.py \
+   --out_dir ./out/kpp/ \
+   --file_list ./out/kpp/pth/HBNODE.csv ./out/kpp/pth/NODE.csv \
+   --model_list HBNODE NODE \
+   --comparisons forward_nfe backward_nfe tr_loss val_loss forward_stiff backward_stiff \
+   --epoch_freq 5
+echo "BASH TASK(S) COMPLETED."
+read -p "$*"
+
+**Euler Equations**
+
+echo "USING PYTHON EXECUTABLE $1"
+$1 src/run_param.py \
+   --dataset EE \
+   --data_dir ./data/EulerEqs.npz \
+   --out_dir ./out/ee/ \
+   --tstart 0 \
+  --tstop 180 \
+   --tr_ind 150 \
+   --param_ind 90 \
+   --model GHBNODE \
+   --epochs 100 \
+   --verbose True
+echo "COMPARISON PLOTS"
+$1 src/compare.py \
+   --out_dir ./out/ee/ \
+   --file_list ./out/ee/pth/GHBNODE.csv ./out/ee/pth/NODE.csv \
+   --model_list GHBNODE NODE \
+   --comparisons forward_nfe backward_nfe tr_loss val_loss \
+   --epoch_freq 1
+echo "BASH TASK(S) COMPLETED."
+read -p "$*"
+
+**All Params in old run.sh**
+
+echo "USING PYTHON EXECUTABLE $1"
+
+echo "GENERATING BASELINES"
+$1 src/baselines.py
+
+echo "GENERATING VKS NON-TRANSIENT PREDICTIONS"
+$1 src/run_pod.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --out_dir ./out/nonT_pred/ \
+    --modes 8 \
+    --tstart 100 \
+    --tstop 300 \
+    --tpred 100
+
+$1 src/run_dmd.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --out_dir ./out/nonT_pred/ \
+    --modes 24 \
+    --tstart 100 \
+    --tstop 180 \
+    --tpred 100
+
+
+echo "GENERATING NON-TRANSIENT VKS VAE PREDICTIONS"
+$1 src/run_vae.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --load_file ./out/nonT_pred/pth/vks_100_200_pod_8.npz \
+    --out_dir ./out/nonT_pred/ \
+    --tr_ind 75 \
+    --val_ind 100 \
+    --eval_ind 200
+    --model NODE \
+	--seed 1242 \
+	--verbose True
+
+$1 src/run_vae.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --load_file ./out/nonT_pred/pth/vks_100_200_pod_8.npz \
+    --out_dir ./out/nonT_pred/ \
+    --tr_ind 75 \
+    --val_ind 100 \
+    --eval_ind 200
+    --latent_dim 3 \
+    --units_dec 24 \
+    --factor .99 \
+    --cooldown 0 \
+    --seed 1242 \
+    --model HBNODE \
+    --verbose True
+
+echo "GENERATING VKS TRANSIENT DATA"
+$1 src/run_pod.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --out_dir ./out/full_pred/ \
+    --modes 8 \
+    --tstart 0 \
+    --tstop 200 \
+    --tpred 200
+
+$1 src/run_dmd.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --out_dir ./out/full_pred/ \
+    --modes 24 \
+    --tstart 0 \
+    --tstop 100 \
+    --tpred 200
+
+echo "GENERATING TRANSIENT VKS SEQ PREDICITONS"
+$1 src/run_vae.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --load_file ./out/nonT_pred/pth/vks_100_200_pod_8.npz \
+    --out_dir ./out/nonT_pred/ \
+    --tr_ind 80 \
+    --val_ind 100 \
+    --model NODE \
+	--seed 1242 \
+	--verbose True
+
+$1 src/run_vae.py \
+    --dataset VKS \
+    --data_dir ./data/VKS.pkl \
+    --load_file ./out/nonT_pred/pth/vks_100_200_pod_8.npz \
+    --out_dir ./out/nonT_pred/ \
+    --tr_ind 80 \
+    --val_ind 100 \
+	--latent_dim 3 \
+	--units_dec 24 \
+	--factor .99 \
+	--cooldown 0 \
+	--seed 1242 \
+    --model HBNODE \
+	--verbose True
+
+echo "BASH TASK(S) COMPLETED."
+
+read -p "$*"
