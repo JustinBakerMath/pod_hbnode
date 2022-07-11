@@ -46,6 +46,8 @@ sh ./bin/experiments.sh python3
 ![vks](./doc/img/vks_pod_recon.gif)
 ![vks](./doc/img/vks_vae_node_recon.gif)
 ![vks](./doc/img/vks_vae_hbnode_recon.gif)
+![vks](./doc/img/vks_seq_node_recon.gif)
+![vks](./doc/img/vks_seq_hbnode_recon.gif)
 
 ### Kolmogorov-Petrovsky-Piskunov equations
 

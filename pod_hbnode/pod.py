@@ -3,13 +3,13 @@ import scipy.linalg
 
 def POD1(U, s_ind, e_ind, modes):
     """ Computes the spatial modes and temporal coefficients using the POD """
-    param = U[s_ind:e_ind, :]
+    param = U[s_ind:e_ind, :]#[300,300,500]
     param_mean = np.mean(param, axis=0)[np.newaxis, ...]
 
     param_flux = param - param_mean
 
     # Snapshots
-    snap_shots = np.matmul(param_flux, param_flux.T)
+    snap_shots = np.matmul(param_flux, param_flux.T) #[300,300]
     eig_vals, eig_vecs = scipy.linalg.eigh(snap_shots)
 
     # descending order

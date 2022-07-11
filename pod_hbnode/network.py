@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import pickle
-import torch
 
 """STANDARD DATA RETRIEVAL
     - Format dimensions as [t,[omega],k] e.g. [t,[xx,yy,zz],k]
