@@ -17,19 +17,26 @@ $1 ./examples/param.py \
 	--model HBNODE \
 	--verbose
 
-echo "FIBER: PARAM NODE"
+echo "EE: PARAM GHBNODE"
 $1 ./examples/param.py \
-	--dataset FIB \
-	--data_dir ./data/FIB.npz \
-	--model HBNODE \
-	--epochs 10 \
+	--dataset EE \
+	--data_dir ./data/EulerEqs.npz \
+	--model GHBNODE \
 	--verbose
 
-echo "FIBER: PARAM HBNODE"
-$1 ./examples/param.py \
-	--dataset FIB \
-	--data_dir ./data/FIB.npz \
-	--model HBNODE \
-	--verbose
+#echo "FIBER: PARAM NODE"
+#$1 ./examples/param.py \
+	#--dataset FIB \
+	#--data_dir ./data/FIB.npz \
+	#--model HBNODE \
+	#--epochs 10 \
+	#--verbose
+
+#echo "FIBER: PARAM HBNODE"
+#$1 ./examples/param.py \
+	#--dataset FIB \
+	#--data_dir ./data/FIB.npz \
+	#--model HBNODE \
+	#--verbose
 
 cp ./out/param_examples/*.gif ./doc/img/

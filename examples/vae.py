@@ -60,6 +60,8 @@ model_parser.add_argument('--factor', type=float, default=0.99,
 uq_params = parser.add_argument_group('Unique Parameters')
 uq_params.add_argument('--seed', type=int, default=1242,
                 help='Set initialization seed')
+uq_params.add_argument('--plt_itvl', type=int, default=20,
+                help='Plot interval')
 uq_params.add_argument('--verbose', default=False, action='store_true',
                 help='Display full NN and all plots.')
 args, unknown = parser.parse_known_args()
@@ -109,5 +111,5 @@ data_reconstruct(val_recon,args.val_ind-1,args)
 data_animation(val_recon,args)
 
 plot_loss(rec_file, args)
-plot_nfe(rec_file,'forward_nfe', args)
-plot_nfe(rec_file,'backward_nfe', args)
+#plot_nfe(rec_file,'forward_nfe', args)
+#plot_nfe(rec_file,'backward_nfe', args)

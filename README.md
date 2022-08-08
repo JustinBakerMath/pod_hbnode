@@ -1,4 +1,4 @@
-# POD for Accellerrated NODE
+# POD for Accelerated NODE
 
  ![](https://img.shields.io/static/v1?label=python&message=v3.8.8&color=green&style=plastic)
 ## About

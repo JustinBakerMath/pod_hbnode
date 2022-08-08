@@ -233,7 +233,7 @@ def mode_prediction(predictions,true,times,verts,args,end_str=''):
         plt.ylim(bottom=min_+.2*min_,top=max_+.2*max_)
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper center',mode='expand', borderaxespad=0., prop={'size': 10}, frameon=False)
     #OUTPUT
-    end_str = str(args.dataset+'_'+args.model+'_mode_pred'+end_str).lower()
+    end_str = str(args.dataset+'_'+args.model+'_mode_pred').lower()
     plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
 
@@ -260,25 +260,27 @@ def ax_loss(epochs,loss,plt_args):
 def plot_loss(fname,args):
     plt.rcParams['xtick.minor.size']=0
     plt.rcParams['ytick.minor.size']=0
-    plt.rc('xtick',labelsize=24)
-    plt.rc('ytick',labelsize=24)
+    plt.rc('xtick',labelsize=36)
+    plt.rc('ytick',labelsize=36)
 
     with open(fname, 'r') as f:
         df = pd.read_csv(f, index_col=False)
     index_ = ['tr_loss', 'val_loss']
     color = ['k','r--']
     losses = df[index_].values
-    epochs=np.arange(len(losses))
+    epochs = np.arange(len(losses))
     plt.figure(tight_layout=True)
     for i,loss in enumerate(losses.T):
-        plt.plot(loss,color[i],label=index_[i])
-    plt.legend()
-    plt.yticks(np.logspace(-4,0,5))
-    plt.ylim(1e-4,1)
-    plt.xlim(epochs[0],epochs[-1])
+        loss = loss[::args.plt_itvl]
+        x = epochs[::args.plt_itvl]
+        plt.plot(x,loss,color[i],label=index_[i])
+    plt.legend(fontsize=24)
+    plt.xlim(epochs[0],epochs[-1]+1)
+    plt.ylim(np.min(losses)*.5,np.max(losses)*1.5)
+    #plt.yticks(np.logspace(-4,0,5))
     plt.yscale('log')
-    end_str = str(args.out_dir+'/'+args.model+'_loss')
-    plt.savefig(end_str+'.pdf', format="pdf", bbox_inches="tight")
+    end_str = str(args.dataset+'_'+args.model+'_loss').lower()
+    plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
     pass
 
@@ -297,8 +299,8 @@ def plot_nfe(fname,index_,args):
     plt.figure(tight_layout=True)
     plt.scatter(epochs,nfes)
     plt.xlim(epochs[0],epochs[-1])
-    end_str = str(args.out_dir+'/'+args.model+'_'+index_)
-    plt.savefig(end_str+'.pdf', format="pdf", bbox_inches="tight")
+    end_str = str(args.dataset+'_'+args.model+'_nfe').lower()
+    plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
     pass
 
@@ -318,8 +320,8 @@ def plot_adjGrad(fname,args,show=False):
     plt.xlabel('Epoch',fontsize=24)
     plt.ylabel('$T-t$',fontsize=24)
     
-    end_str = str(args.out_dir+'/'+args.model+'_adjGrad')
-    plt.savefig(end_str+'.pdf', format="pdf", bbox_inches="tight")
+    end_str = str(args.dataset+'_'+args.model+'_adjGrad').lower()
+    plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
     pass
 
@@ -335,8 +337,8 @@ def plot_stiff(fname,args, clip=1, show=False):
     plt.yscale('log')
     plt.xlim(0,epochs[-1])
 
-    end_str = str(args.out_dir+'/'+args.model+'_stiffness')
-    plt.savefig(end_str+'.pdf', format="pdf", bbox_inches="tight")
+    end_str = str(args.dataset+'_'+args.model+'_stiff').lower()
+    plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
     pass
 
@@ -361,8 +363,8 @@ def compare_nfe(file_list,model_list,index_,args):
 
     plt.xlim(epochs[0],epochs[-1])
     plt.legend(fontsize=24)
-    end_str = str(args.out_dir+'/compare_'+index_)
-    plt.savefig(end_str+'.pdf', format="pdf", bbox_inches="tight")
+    end_str = str(args.dataset+'_'+args.model+'_comp_nfe').lower()
+    plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
 
 def compare_stiff(file_list,model_list,index_,args):
@@ -386,8 +388,8 @@ def compare_stiff(file_list,model_list,index_,args):
     plt.ylim(2e1,1e4)
     plt.yscale('log')
     plt.xlim(epochs[0],epochs[-1])
-    end_str = str(args.out_dir+'/compare_'+index_)
-    plt.savefig(end_str+'.pdf', format="pdf", bbox_inches="tight")
+    end_str = str(args.dataset+'_'+args.model+'_comp_stiff').lower()
+    plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
 
 def compare_loss(file_list,model_list,index_,args):
@@ -418,8 +420,8 @@ def compare_loss(file_list,model_list,index_,args):
     plt.ylabel('Loss',fontsize=36)
     plt.xlabel('Epoch',fontsize=36)
     plt.legend(fontsize=24)
-    end_str = str(args.out_dir+'/compare_'+index_)
-    plt.savefig(end_str+'.pdf', format="pdf", bbox_inches="tight")
+    end_str = str(args.dataset+'_'+args.model+'_comp_loss').lower()
+    plt.savefig(args.out_dir+'/'+end_str+'.pdf', format="pdf", bbox_inches="tight")
     if args.verbose: plt.show()
 
 

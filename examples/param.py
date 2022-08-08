@@ -60,6 +60,8 @@ train_params.add_argument('--cooldown', type=int, default=0,
 train_params.add_argument('--patience', type=int, default=5,
                     help = 'Initial learning rate.')
 uq_params = parser.add_argument_group('Unique Parameters')
+uq_params.add_argument('--plt_itvl', type=int, default=20,
+                help='Plot interval')
 uq_params.add_argument('--device', type=str, default='cpu',
                 help='Set default torch hardware device.')
 uq_params.add_argument('--seed', type=int, default=0,
